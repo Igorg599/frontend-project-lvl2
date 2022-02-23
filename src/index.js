@@ -16,24 +16,30 @@ const genDiff = (file1, file2) => {
   const keysAll = _.union(keys1, keys2);
   keysAll.sort();
 
-  for (let key = 1; key <= keysAll.length; key += 1) {
+  for (let indexKey = 0; indexKey < keysAll.length; indexKey += 1) {
     if (
-      _.has(fileJson1, key)
-      && _.has(fileJson2, key)
-      && fileJson1[key] === fileJson2[key]
+      _.has(fileJson1, keysAll[indexKey])
+      && _.has(fileJson2, keysAll[indexKey])
+      && fileJson1[keysAll[indexKey]] === fileJson2[keysAll[indexKey]]
     ) {
-      result[`  ${key}`] = fileJson1[key];
+      result[`  ${keysAll[indexKey]}`] = fileJson1[keysAll[indexKey]];
     } else if (
-      _.has(fileJson1, key)
-      && _.has(fileJson2, key)
-      && fileJson1[key] !== fileJson2[key]
+      _.has(fileJson1, keysAll[indexKey])
+      && _.has(fileJson2, keysAll[indexKey])
+      && fileJson1[keysAll[indexKey]] !== fileJson2[keysAll[indexKey]]
     ) {
-      result[`${operators[1]} ${key}`] = fileJson1[key];
-      result[`${operators[0]} ${key}`] = fileJson2[key];
-    } else if (!_.has(fileJson1, key) || _.has(fileJson2, key)) {
-      result[`${operators[0]} ${key}`] = fileJson2[key];
-    } else if (_.has(fileJson1, key) || !_.has(fileJson2, key)) {
-      result[`${operators[1]} ${key}`] = fileJson1[key];
+      result[`${operators[1]} ${keysAll[indexKey]}`] = fileJson1[keysAll[indexKey]];
+      result[`${operators[0]} ${keysAll[indexKey]}`] = fileJson2[keysAll[indexKey]];
+    } else if (
+      !_.has(fileJson1, keysAll[indexKey])
+      || _.has(fileJson2, keysAll[indexKey])
+    ) {
+      result[`${operators[0]} ${keysAll[indexKey]}`] = fileJson2[keysAll[indexKey]];
+    } else if (
+      _.has(fileJson1, keysAll[indexKey])
+      || !_.has(fileJson2, keysAll[indexKey])
+    ) {
+      result[`${operators[1]} ${keysAll[indexKey]}`] = fileJson1[keysAll[indexKey]];
     }
   }
   result = JSON.stringify(result, null, 2);
