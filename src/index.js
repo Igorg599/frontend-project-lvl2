@@ -43,7 +43,7 @@ const genDiff = (file1, file2) => {
     }
   }
   result = JSON.stringify(result, null, 2);
-  return result.replace(/"/g, '');
+  return result.replace(/"/g, '').replace(/,/g, '');
 };
 
 export default genDiff;
