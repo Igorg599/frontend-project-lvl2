@@ -1,14 +1,11 @@
 import _ from 'lodash';
-import { readFileSync } from 'fs';
-import path from 'path';
-
-const fileParse = (file) => JSON.parse(readFileSync(path.resolve(file), 'utf8'));
+import parser from './parsers/index.js';
 
 const operators = ['+', '-'];
 
 const genDiff = (file1, file2) => {
-  const fileJson1 = fileParse(file1);
-  const fileJson2 = fileParse(file2);
+  const fileJson1 = parser(file1);
+  const fileJson2 = parser(file2);
   let result = {};
 
   const keys1 = Object.keys(fileJson1);
