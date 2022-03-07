@@ -7,7 +7,7 @@
     "gendiff": "bin/gendiff.js"
   },
   "scripts": {
-    "test": "npx jest  --bail"
+    "test": "npx jest"
   },
   "repository": {
     "type": "git",
