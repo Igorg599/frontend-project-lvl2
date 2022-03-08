@@ -3,7 +3,7 @@ import _ from 'lodash';
 const createTree = (obj1, obj2) => {
   const keys = Object.keys({ ...obj1, ...obj2 });
   const sortedKeys = _.sortBy(keys);
-  const newq = sortedKeys.map((key) => {
+  return sortedKeys.map((key) => {
     if (!_.has(obj1, key)) {
       return ['add', { key, val: obj2[key] }];
     }
@@ -18,7 +18,6 @@ const createTree = (obj1, obj2) => {
     }
     return ['updated', { key, val1: obj1[key], val2: obj2[key] }];
   });
-  return newq;
 };
 
 export default createTree;
