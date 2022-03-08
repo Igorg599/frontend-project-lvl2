@@ -1,46 +1,34 @@
 import _ from 'lodash';
 import parser from './parsers/index.js';
+import makeFormater from './formatters/index.js';
 
-const operators = ['+', '-'];
-
-const genDiff = (file1, file2) => {
-  const fileJson1 = parser(file1);
-  const fileJson2 = parser(file2);
-  let result = {};
-
-  const keys1 = Object.keys(fileJson1);
-  const keys2 = Object.keys(fileJson2);
-  const keysAll = _.union(keys1, keys2);
-  keysAll.sort();
-
-  for (let indexKey = 0; indexKey < keysAll.length; indexKey += 1) {
-    if (
-      _.has(fileJson1, keysAll[indexKey])
-      && _.has(fileJson2, keysAll[indexKey])
-      && fileJson1[keysAll[indexKey]] === fileJson2[keysAll[indexKey]]
-    ) {
-      result[`  ${keysAll[indexKey]}`] = fileJson1[keysAll[indexKey]];
-    } else if (
-      _.has(fileJson1, keysAll[indexKey])
-      && _.has(fileJson2, keysAll[indexKey])
-      && fileJson1[keysAll[indexKey]] !== fileJson2[keysAll[indexKey]]
-    ) {
-      result[`${operators[1]} ${keysAll[indexKey]}`] = fileJson1[keysAll[indexKey]];
-      result[`${operators[0]} ${keysAll[indexKey]}`] = fileJson2[keysAll[indexKey]];
-    } else if (
-      !_.has(fileJson1, keysAll[indexKey])
-      || _.has(fileJson2, keysAll[indexKey])
-    ) {
-      result[`${operators[0]} ${keysAll[indexKey]}`] = fileJson2[keysAll[indexKey]];
-    } else if (
-      _.has(fileJson1, keysAll[indexKey])
-      || !_.has(fileJson2, keysAll[indexKey])
-    ) {
-      result[`${operators[1]} ${keysAll[indexKey]}`] = fileJson1[keysAll[indexKey]];
+const createTree = (obj1, obj2) => {
+  const keys = Object.keys({ ...obj1, ...obj2 });
+  const sortedKeys = _.sortBy(keys);
+  const newq = sortedKeys.map((key) => {
+    if (!_.has(obj1, key)) {
+      return ['add', { key, val: obj2[key] }];
     }
-  }
-  result = JSON.stringify(result, null, 2);
-  return result.replace(/"/g, '').replace(/,/g, '');
+    if (!_.has(obj2, key)) {
+      return ['remove', { key, val: obj1[key] }];
+    }
+    if (typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
+      return ['recursion', { key, val: createTree(obj1[key], obj2[key]) }];
+    }
+    if (_.isEqual(obj1[key], obj2[key])) {
+      return ['same', { key, val: obj1[key] }];
+    }
+    return ['updated', { key, val1: obj1[key], val2: obj2[key] }];
+  });
+  console.log(newq);
+  return newq;
+};
+
+const genDiff = (filepath1, filepath2, formatType = 'stylish') => {
+  const file1 = parser(filepath1);
+  const file2 = parser(filepath2);
+  const tree = createTree(file1, file2);
+  return makeFormater(tree, formatType);
 };
 
 export default genDiff;

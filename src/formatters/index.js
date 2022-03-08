@@ -1,10 +1,12 @@
-import stylish from "./stylish.js"
+import stylish from './stylish.js';
 
-export default (getDiff, format = "stylish") => {
+const makeFormater = (getDiff, format = 'stylish') => {
   switch (format) {
-    case "stylish":
-      return stylish(getDiff)
+    case 'stylish':
+      return stylish(getDiff);
     default:
-      throw new Error(`Формат не поддерживается - ${format}`)
+      throw new Error(`Формат не поддерживается - ${format}`);
   }
-}
+};
+
+export default makeFormater;
