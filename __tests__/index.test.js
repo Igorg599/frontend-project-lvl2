@@ -21,7 +21,7 @@ test('check for correct ymlFiles', () => {
 });
 
 test('plain', () => {
-  expect(genDiff('__fixtures__/file1.json', '__fixtures__/file2.json')).toBe(
-    readFile('expectFilesPlain.txt'),
-  );
+  expect(
+    genDiff('__fixtures__/file1.json', '__fixtures__/file2.json', 'plain'),
+  ).toBe(readFile('expectFilesPlain.txt'));
 });
