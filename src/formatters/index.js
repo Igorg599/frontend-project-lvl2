@@ -1,9 +1,9 @@
 import stylish from './stylish.js';
 
-const makeFormater = (getDiff, format = 'stylish') => {
+const makeFormater = (tree, format = 'stylish') => {
   switch (format) {
     case 'stylish':
-      return stylish(getDiff);
+      return stylish(tree);
     default:
       throw new Error(`Формат не поддерживается - ${format}`);
   }
