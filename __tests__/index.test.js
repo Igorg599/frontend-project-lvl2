@@ -25,3 +25,9 @@ test('plain', () => {
     genDiff('__fixtures__/file1.json', '__fixtures__/file2.json', 'plain'),
   ).toBe(readFile('expectFilesPlain.txt'));
 });
+
+test('json', () => {
+  expect(
+    genDiff('__fixtures__/file1.json', '__fixtures__/file2.json', 'json'),
+  ).toBe(readFile('expectFilesJson.txt'));
+});
