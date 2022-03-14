@@ -1,4 +1,4 @@
-const currentIndent = (depth, intend = 4) => ' '.repeat(intend + depth);
+const currentIndent = (depth, intend = 4) => ' '.repeat(intend * depth - 2);
 
 const stringify = (someEntity, spaceCount) => {
   const iter = (current, depth) => {
@@ -9,9 +9,9 @@ const stringify = (someEntity, spaceCount) => {
       return null;
     }
     const lines = Object.entries(current).map(
-      ([key, value]) => `${currentIndent(depth + 4)}${key}: ${iter(value, depth + 4)}`,
+      ([key, value]) => `${currentIndent(depth + 1)}  ${key}: ${iter(value, depth + 1)}`,
     );
-    return ['{', ...lines, `${currentIndent(depth)}}`].join('\n');
+    return ['{', ...lines, `${currentIndent(depth)}  }`].join('\n');
   };
 
   return iter(someEntity, spaceCount);
@@ -19,39 +19,39 @@ const stringify = (someEntity, spaceCount) => {
 
 const stylish = (data) => {
   const iter = (tree, depth) => tree.map((node) => {
-    if (node[0] === 'add') {
-      return `${currentIndent(depth - 2)}+ ${node[1].key}: ${stringify(
-        node[1].val,
+    if (node.type === 'add') {
+      return `${currentIndent(depth)}+ ${node.key}: ${stringify(
+        node.val,
         depth,
       )}\n`;
     }
-    if (node[0] === 'remove') {
-      return `${currentIndent(depth - 2)}- ${node[1].key}: ${stringify(
-        node[1].val,
+    if (node.type === 'remove') {
+      return `${currentIndent(depth)}- ${node.key}: ${stringify(
+        node.val,
         depth,
       )}\n`;
     }
-    if (node[0] === 'same') {
-      return `${currentIndent(depth - 2)}  ${node[1].key}: ${stringify(
-        node[1].val,
+    if (node.type === 'same') {
+      return `${currentIndent(depth)}  ${node.key}: ${stringify(
+        node.val,
         depth,
       )}\n`;
     }
-    if (node[0] === 'updated') {
-      return `${currentIndent(depth - 2)}- ${node[1].key}: ${stringify(
-        node[1].val1,
+    if (node.type === 'updated') {
+      return `${currentIndent(depth)}- ${node.key}: ${stringify(
+        node.val1,
         depth,
-      )}\n${currentIndent(depth - 2)}+ ${node[1].key}: ${stringify(
-        node[1].val2,
+      )}\n${currentIndent(depth)}+ ${node.key}: ${stringify(
+        node.val2,
         depth,
       )}\n`;
     }
-    return `${currentIndent(depth)}${node[1].key}: {\n${iter(
-      node[1].val,
-      depth + 4,
-    ).join('')}${currentIndent(depth)}}\n`;
+    return `${currentIndent(depth)}  ${node.key}: {\n${iter(
+      node.children,
+      depth + 1,
+    ).join('')}${currentIndent(depth)}  }\n`;
   });
-  return `{\n${iter(data, 0).join('')}}`;
+  return `{\n${iter(data, 1).join('')}}`;
 };
 
 export default stylish;
