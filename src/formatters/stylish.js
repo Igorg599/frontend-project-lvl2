@@ -19,37 +19,38 @@ const stringify = (someEntity, spaceCount) => {
 
 const stylish = (data) => {
   const iter = (tree, depth) => tree.map((node) => {
-    if (node.type === 'add') {
-      return `${currentIndent(depth)}+ ${node.key}: ${stringify(
-        node.val,
-        depth,
-      )}\n`;
+    switch (node.type) {
+      case 'add':
+        return `${currentIndent(depth)}+ ${node.key}: ${stringify(
+          node.val,
+          depth,
+        )}\n`;
+      case 'remove':
+        return `${currentIndent(depth)}- ${node.key}: ${stringify(
+          node.val,
+          depth,
+        )}\n`;
+      case 'same':
+        return `${currentIndent(depth)}  ${node.key}: ${stringify(
+          node.val,
+          depth,
+        )}\n`;
+      case 'updated':
+        return `${currentIndent(depth)}- ${node.key}: ${stringify(
+          node.val1,
+          depth,
+        )}\n${currentIndent(depth)}+ ${node.key}: ${stringify(
+          node.val2,
+          depth,
+        )}\n`;
+      case 'recursion':
+        return `${currentIndent(depth)}  ${node.key}: {\n${iter(
+          node.children,
+          depth + 1,
+        ).join('')}${currentIndent(depth)}  }\n`;
+      default:
+        throw new Error(`Type is not defined - ${node.type}`);
     }
-    if (node.type === 'remove') {
-      return `${currentIndent(depth)}- ${node.key}: ${stringify(
-        node.val,
-        depth,
-      )}\n`;
-    }
-    if (node.type === 'same') {
-      return `${currentIndent(depth)}  ${node.key}: ${stringify(
-        node.val,
-        depth,
-      )}\n`;
-    }
-    if (node.type === 'updated') {
-      return `${currentIndent(depth)}- ${node.key}: ${stringify(
-        node.val1,
-        depth,
-      )}\n${currentIndent(depth)}+ ${node.key}: ${stringify(
-        node.val2,
-        depth,
-      )}\n`;
-    }
-    return `${currentIndent(depth)}  ${node.key}: {\n${iter(
-      node.children,
-      depth + 1,
-    ).join('')}${currentIndent(depth)}  }\n`;
   });
   return `{\n${iter(data, 1).join('')}}`;
 };
