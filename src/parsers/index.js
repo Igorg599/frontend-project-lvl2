@@ -4,23 +4,18 @@ import { readFileSync } from 'fs';
 
 export default (file) => {
   const filename = readFileSync(path.resolve(file), 'utf-8');
-  let parse;
   const extension = path.extname(file);
   switch (extension) {
     case '.json':
-      parse = JSON.parse(filename);
-      break;
+      return JSON.parse(filename);
 
     case '.yaml':
-      parse = yaml.load(filename);
-      break;
+      return yaml.load(filename);
 
     case '.yml':
-      parse = yaml.load(filename);
-      break;
+      return yaml.load(filename);
 
     default:
-      break;
+      throw new Error('Error format');
   }
-  return parse;
 };
